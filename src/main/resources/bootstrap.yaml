@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: load-service
+    timezone: Asia/Dubai
+  cloud:
+    config:
+      enable: true
+      uri: http://slaconfig:${SLA_CONFIG_PORT:8081}
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - HEAD
+  logging:
+    file: logs/spring.log
+    pattern:
+      console: "%d [%t] %-5level - %msg%n"
+      file: "%d [%t] %-5level - %msg%n"
+    level:
+      com.start.load.application: INFO
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    platform: postgresql
+    url: jdbc:postgresql://${SLA_DB_HOST:10.170.4.195}:${SLA_DB_PORT:5432}/${SLA_DB_NAME:OUM_SLA}
+    url2: jdbc:postgresql://${SLA_LOAD_HOST_EXTERNAL:10.170.4.195}:${SLA_LOAD_PORT_EXTERNAL:5432}/${SLA_LOAD_DB_EXTERNAL:OUM_ADDC}
+    username: ${SLA_DB_USER:mdm_addc}
+    username2: ${SLA_LOAD_USER_EXTERNAL:mdm_addc}
+    password: ${SLA_DB_PWD:4ddc2022!}
+    password2: ${SLA_LOAD_PASS_EXTERNAL:4ddc2022!}
+    mongodb: ${SLA_LOAD_MONGO:mongodb://platformadmin:3t1s4l4t-2022!@10.170.4.194:27017/?authSource=oum_sla}
+    substring: ${SCHEDULE_SUBSTR_DAYS:2}
+    mongo:
+      database1: ${DATABASE_MONGO_AADC:AADC}
+      database2: ${DATABASE_MONGO_ADDC:ADDC}
+    timezone: ${TIMEZONE_LOAD:Asia/Dubai}
+    schedule:
+      #      mongodb: ${SCHEDULE_MONGODB:* * * * * ?}
+      mongodb: ${SCHEDULE_MONGODB:5 5 1 * * ?}
+      postgre: ${SCHEDULE_POSTGRE:5 35 1 * * ?}
+      mongodbtwo: ${SCHEDULE_MONGODB_2_DAYS:5 20 1 * * ?}
+      truncate: ${SCHEDULE_TRUNCATE:5 1 1 * * ?}
+      truncateonlytwo: ${SCHEDULE_TRUNCATE_ONLY_2_DAYS:10 2 1 * * ?}
+    tables:
+      tablemeterstaging: ${TABLE_POSTGRE:public.SLA_Meter_Staging}
+      tablecommandstaging: ${TABLE_MONGO:public.SLA_Command_Staging}
+    schema:
+      schemaorgaddc: ${SLA_LOAD_SCHEMA_EXTERNAL_ADDC:addc}
+      schemaorgaadc: ${SLA_LOAD_SCHEMA_EXTERNAL_AADC:aadc}
+    monthly: ${TRUNCATE_MONTHLY:90 days}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      format_sql: true  # Formato bonito para las consultas SQL
+      use_sql_comments: true  # Registrar parámetros de las consultas SQL
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
